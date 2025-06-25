@@ -105,7 +105,7 @@ function Agent({ userName, userId, type }: AgentProps) {
                         />
                         {isSpeaking && <span className="animate-speak" />}
                     </div>
-                    <h3>PrepMe AI</h3>
+                    <h3>MockMate AI</h3>
                 </div>
 
                 <div className="card-border">

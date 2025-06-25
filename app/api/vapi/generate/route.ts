@@ -1,23 +1,32 @@
-
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
 import { getRandomInterviewCover } from "@/lib/utils";
 import { db } from "@/firebase/admin";
+import {getCurrentUser} from "@/lib/actions/auth.action";
 
 export async function GET() {
     return Response.json({ success: true, data: "Thank You" }, { status: 200 });
 }
 
 export async function POST(request: Request) {
-    const { type, role, level, techStack, amount, userid } = await request.json();
-
     try {
+        const currentUser = await getCurrentUser();
+
+        if (!currentUser) {
+            return Response.json(
+                { success: false, error: "Unauthorized" },
+                { status: 401 }
+            );
+        }
+
+        const { type, role, level, techstack, amount } = await request.json();
+
         const { text: questions } = await generateText({
             model: google("gemini-2.0-flash-001"),
             prompt: `Prepare questions for a job interview.
 The job role is ${role}.
 The job experience level is ${level}.
-The tech stack used in the job is ${techStack}.
+The tech stack used in the job is ${techstack}.
 The focus between behavioural and technical questions should lean towards: ${type}.
 The amount of questions required is: ${amount}.
 Please return only the questions, without any additional text.
@@ -33,9 +42,9 @@ Thank you! <3`,
             role,
             type,
             level,
-            techstack: techStack.split(","),
+            techstack: techstack.split(","),
             questions: JSON.parse(questions),
-            userId: userid,
+            userid: currentUser.id, // ✅ use lowercased 'userid'
             finalized: true,
             coverImage: getRandomInterviewCover(),
             createdAt: new Date().toISOString(),
