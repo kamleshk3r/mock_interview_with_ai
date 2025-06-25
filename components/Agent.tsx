@@ -18,7 +18,7 @@ interface SavedMessage {
     content: string;
 }
 
-const ASSISTANT = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID!;
+const ASSISTANT = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
 
 function Agent({ userName, userId, type }: AgentProps) {
     const router = useRouter();
@@ -88,7 +88,7 @@ function Agent({ userName, userId, type }: AgentProps) {
 
     const latestMsg = messages[messages.length - 1]?.content;
 
-    const isInactiveOrFinished =
+    const isInativeOrFinished =
         callStatus === CallStatus.FINISHED || callStatus === CallStatus.INACTIVE;
 
     return (
@@ -105,7 +105,7 @@ function Agent({ userName, userId, type }: AgentProps) {
                         />
                         {isSpeaking && <span className="animate-speak" />}
                     </div>
-                    <h3>MockMate AI</h3>
+                    <h3>PrepMe AI</h3>
                 </div>
 
                 <div className="card-border">
@@ -149,7 +149,7 @@ function Agent({ userName, userId, type }: AgentProps) {
                     callStatus !== CallStatus.CONNECTING && "hidden"
                 )}
             />
-                        <span>{isInactiveOrFinished ? "Call" : ". . . "}</span>
+                        <span>{isInativeOrFinished ? "Call" : ". . . "}</span>
                     </button>
                 ) : (
                     <button className="btn-disconnect" onClick={handleDisconnect}>

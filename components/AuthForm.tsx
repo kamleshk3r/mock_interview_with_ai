@@ -96,31 +96,31 @@ const AuthForm = ({ type }: { type: FormType }) => {
 
                 <h3>Practice job interview with AI</h3>
 
-            <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mt-4 form">
-                    {!isSignIN && (
+                <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6 mt-4 form">
+                        {!isSignIN && (
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                label="Name"
+                                placeholder="Enter your name" />
+                        )}
                         <FormField
                             control={form.control}
-                            name="name"
-                            label="Name"
-                            placeholder="Enter your name" />
-                    )}
-                    <FormField
-                        control={form.control}
-                        name="email"
-                        label="Email"
-                        placeholder="Enter email address"
-                        type="email" />
-                    <FormField
-                        control={form.control}
-                        name="password"
-                        label="Password"
-                        placeholder="Enter your Password"
-                        type="password"/>
+                            name="email"
+                            label="Email"
+                            placeholder="Enter email address"
+                            type="email" />
+                        <FormField
+                            control={form.control}
+                            name="password"
+                            label="Password"
+                            placeholder="Enter your Password"
+                            type="password"/>
 
-                    <Button className="btn" type="submit">{isSignIN ? 'Sign in' : 'Create an account'}</Button>
-                </form>
-            </Form>
+                        <Button className="btn" type="submit">{isSignIN ? 'Sign in' : 'Create an account'}</Button>
+                    </form>
+                </Form>
 
                 <p className="text-center">
                     {isSignIN ? 'Don\'t have an account?' : 'Already have an account?'}
@@ -128,7 +128,7 @@ const AuthForm = ({ type }: { type: FormType }) => {
                         {!isSignIN ? 'Sign in' : 'Sign up'}
                     </Link>
                 </p>
-        </div>
+            </div>
         </div>
     )
 }

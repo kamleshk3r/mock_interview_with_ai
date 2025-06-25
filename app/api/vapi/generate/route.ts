@@ -1,36 +1,41 @@
-import { NextRequest } from "next/server";
+
 import { generateText } from "ai";
 import { google } from "@ai-sdk/google";
-import { db } from "@/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
+import { db } from "@/firebase/admin";
 
-export async function POST(request: NextRequest) {
-    const { type, role, level, techStack, amount, userid } = await request.json(); // 🔁 'userid' not 'userId'
+export async function GET() {
+    return Response.json({ success: true, data: "Thank You" }, { status: 200 });
+}
 
-    if (!userid) {
-        return Response.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
+export async function POST(request: Request) {
+    const { type, role, level, techStack, amount, userid } = await request.json();
 
     try {
         const { text: questions } = await generateText({
-            model: google("gemini-1.5-flash"),
-            prompt: `
-        Generate interview questions for the following job description, and return ONLY the questions in format like this: [question1, question2, question3].
-        Job Type: ${type}
-        Role: ${role}
-        Level: ${level}
-        Tech Stack: ${techStack}
-        Number of Questions: ${amount}
-      `,
+            model: google("gemini-2.0-flash-001"),
+            prompt: `Prepare questions for a job interview.
+The job role is ${role}.
+The job experience level is ${level}.
+The tech stack used in the job is ${techStack}.
+The focus between behavioural and technical questions should lean towards: ${type}.
+The amount of questions required is: ${amount}.
+Please return only the questions, without any additional text.
+The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice assistant.
+Return the questions formatted like this:
+["Question 1 ","Question 2","Question 3"]
+Thank you! <3`,
         });
+
+        console.log(questions);
 
         const interview = {
             role,
             type,
             level,
-            techstack: techStack.split(","), // assuming comma-separated
+            techstack: techStack.split(","),
             questions: JSON.parse(questions),
-            userId: userid, // ✅ storing Firestore UID as userId in DB
+            userId: userid,
             finalized: true,
             coverImage: getRandomInterviewCover(),
             createdAt: new Date().toISOString(),
@@ -39,9 +44,15 @@ export async function POST(request: NextRequest) {
 
         await db.collection("interviews").add(interview);
 
-        return Response.json({ success: true, questions }, { status: 200 });
-    } catch (error) {
-        console.error(error);
-        return Response.json({ success: false, error: "Internal Server Error" }, { status: 500 });
+        return Response.json(
+            { success: true, questions: questions },
+            { status: 200 }
+        );
+    } catch (e) {
+        console.error(e);
+        return Response.json(
+            { success: false, error: "Internal Server Error" },
+            { status: 500 }
+        );
     }
 }
