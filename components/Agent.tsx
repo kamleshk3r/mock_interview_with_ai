@@ -76,7 +76,7 @@ function Agent({ userName, userId, type }: AgentProps) {
         await vapi.start(ASSISTANT, {
             variableValues: {
                 username: userName,
-                userId: userId,
+                userid: userId,
             },
         });
     };

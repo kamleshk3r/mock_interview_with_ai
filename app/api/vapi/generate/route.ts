@@ -5,9 +5,9 @@ import { db } from "@/firebase/admin";
 import { getRandomInterviewCover } from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
-    const { type, role, level, techStack, amount, userId } = await request.json();
+    const { type, role, level, techStack, amount, userid } = await request.json(); // 🔁 'userid' not 'userId'
 
-    if (!userId) {
+    if (!userid) {
         return Response.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
@@ -28,9 +28,9 @@ export async function POST(request: NextRequest) {
             role,
             type,
             level,
-            techstack: techStack.split(","),
+            techstack: techStack.split(","), // assuming comma-separated
             questions: JSON.parse(questions),
-            userId, // ✅ Save correct UID here
+            userId: userid, // ✅ storing Firestore UID as userId in DB
             finalized: true,
             coverImage: getRandomInterviewCover(),
             createdAt: new Date().toISOString(),
